@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue test</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+    <div id="app">{{msg}}
+        <p v-if="seen" :style="{fontSize: fontsize + 'px'}">现在你看到我了哦{{searchText}}</p>
+        <ol>
+            <li v-for="s in todo">{{s.txt}}</li>
+        </ol>
+        <p v-for="(p,index) in param">
+            {{p.t}}
+            <p v-for="pp in param[0].list">{{pp}}</p>
+        </p>o
+        <button @click="reverseMsg">逆转信息</button>
+        <blog-post v-for="item of posts" :post="item" v-on:enlarge-text="fontsize += 0.1"></blog-post>
+        <custom-input v-model="searchText"><label>please input:</label></custom-input>
+        <button @click="select(1)">选中1</button><button @click="select(2)">选中2</button>
+        <keep-live>
+        <component :is="currentComponent"></component>
+        </keep-live>
+    </div>
+    <script>
+        Vue.component('blog-post',{
+            props:['post'],
+            data:function(){
+                return {
+                    
+                };
+            },
+            template:`
+            <button  v-on:click="$emit('enlarge-text')">{{post.id}}</button>
+            `
+        });
+        Vue.component('simple',{
+            props:['post'],
+            template:`
+            <p>simple simple</p>
+            `
+        });
+        Vue.component('simple2',{
+            props:['post'],
+            template:`
+            <p>simple2 simple2</p>
+            `
+        });
+        Vue.component('custom-input',{
+            props:['value'],
+            data:function(){
+                return {
+                    
+                };
+            },
+            template:`
+            <p>
+            <slot></slot>
+            <input :value="value" @input="$emit('input',$event.target.value)"/>
+            </p>
+            `
+        });
+        new Vue({
+            el:'#app',
+            data:{
+                msg:'雷猴',
+                currentComponent:'simple',
+                fontsize:28,
+                seen:true,
+                todo:[
+                    {txt:'学习vue'},
+                    {txt:'学习javascript'},
+                    {txt:'学习xxxx'}
+                ],
+                param:[
+                    {t:'parm1',list:['nx1','nx2','nx3']},
+                    {t:'parm2',list:['nt1','nt2','nt3']},
+                    {t:'parm3',list:['np1','np2','np3']},
+                ],
+                posts:[
+                    {id:'1post'},
+                    {id:'2post'}
+                ],
+                searchText:null
+            },
+            methods:{
+                reverseMsg:function(){
+                    this.msg = this.msg.split('').reverse().join('');
+                },
+                bigFont:function(val){
+                    console.log('call bigFont size:'+val);
+                },
+                select:function(type){
+                    if(type == '1'){
+                        this.currentComponent = 'simple'
+                    }else{
+                        this.currentComponent = 'simple2'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
